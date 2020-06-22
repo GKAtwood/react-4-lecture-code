@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
+import axios from 'axios';
+
 
 class App extends Component {
   constructor(props){
@@ -10,11 +12,46 @@ class App extends Component {
     }
   }
 
+  componentDidMount(){
+    this.getPokemon();
+
+    
+  }
+
+
+  getPokemon = () => {
+    axios.get(`https://pokeapi.co/api/v2/pokemon/${this.state.pokeId}`)
+    .then(res => this.setState({pokemon: res.data}))
+    .catch(err =>console.log(err) )
+  }
+
+  handleIncrement = () => {
+    this.setState({pokeId : this.state.pokeId + 1 });
+    this.getPokemon();
+  }
+
+  handleDecrement = () => {
+    this.setState({pokeId : this.state.pokeId -1 });
+    this.getPokemon();
+  }
+
   render(){
     return (
       <div className='App'>
         <img className='pokemon-logo' src='https://1000logos.net/wp-content/uploads/2017/05/Pokemon-Logo.png' alt='Pokemon'/>
-      </div>
+        { this.state.pokemon.name
+        ? (
+            <>
+            <p className='poke-name'>{this.state.pokemon.name}</p>
+            <img className='poke-image' src={this.state.pokemon.sprites.front_default}/>    
+            </>
+        )
+      : null }
+      <button onClick={this.handleDecrement}>Previous</button>
+      <button onClick={this.handleIncrement}>Next</button>
+       
+     </div>
+
     )
   }
 }
